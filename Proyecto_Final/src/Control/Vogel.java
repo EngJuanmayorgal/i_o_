@@ -177,7 +177,7 @@ public final class Vogel {
             if (pickI == -1 || pickJ == -1) {
                 break; // seguridad
             }
-            // Asignar la cantidad mínima entre supply y demand
+            // Asignar la cantidad mínima entre oferta y demand
             int quantity = Math.min(S[pickI], D[pickJ]);
             allocation[pickI][pickJ] = quantity;
             S[pickI] -= quantity;
