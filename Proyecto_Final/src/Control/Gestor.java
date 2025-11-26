@@ -1,7 +1,9 @@
 package Control;
 
+import modelo.Vogel;
 import Vista.VistaPrincipal;
 import Vista.VistaTabla;
+import modelo.EsquinaNoroeste;
 
 public final class Gestor {
 
@@ -12,6 +14,7 @@ public final class Gestor {
         PagPrincipal();
     }
 
+    //aca se crea la vista principal donde se escogen el modelo, las fabricas y los destinos
     public void PagPrincipal() {
         if (vistaTabla != null) {
             vistaTabla.dispose();
@@ -19,17 +22,26 @@ public final class Gestor {
         vistaPrin = new VistaPrincipal(this);
     }
 
+    //me crea la vista de la tabla con la cantidad de fabricas y destinos
     public void VistaTabla(int destinos, int fabricas, String Modelo) {
         vistaPrin.dispose();
-        vistaTabla = new VistaTabla(this);
-        vistaTabla.Title.setText("Modelo " + Modelo);
+        vistaTabla = new VistaTabla(this, Modelo);
         vistaTabla.MostrarTabla(destinos, fabricas);
     }
 
-    public void Resolver(int[] oferta,int[] demanda,int[][] costos) {
-        Vogel metodoVogel=new Vogel();
-        int[][] solucion= metodoVogel.vogelApproximation(costos, oferta, demanda);
+    //crea una clase vogel para poder resolver el problema y me configura la tabla visible para q se vea el resultado
+    public void ResolverVogel(int[] oferta, int[] demanda, int[][] costos) {
+        Vogel metodoVogel = new Vogel();
+        int[][] solucion = metodoVogel.vogelApproximation(costos, oferta, demanda);
         vistaTabla.TablaResuelta(solucion);
-        vistaTabla.Title.setText("el costo total es de :"+metodoVogel.totalCost(solucion, costos) );
+        vistaTabla.Title.setText("el costo total es de :" + metodoVogel.totalCost(solucion, costos));
+    }
+
+    //crea una clase esquinaNoroeste para poder resolver el problema y me configura la tabla visible para q se vea el resultado
+    public void ResolverEsquina(int[] oferta, int[] demanda, int[][] costos) {
+        EsquinaNoroeste metodoEquina = new EsquinaNoroeste();
+        int[][] solucion = metodoEquina.esquinaNoroeste(costos, oferta, demanda);
+        vistaTabla.TablaResuelta(solucion);
+        vistaTabla.Title.setText("el costo total es de :" + metodoEquina.totalCost(solucion, costos));
     }
 }

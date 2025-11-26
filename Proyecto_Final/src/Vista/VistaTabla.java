@@ -8,11 +8,14 @@ public class VistaTabla extends javax.swing.JFrame {
     public static int destinos, fabricas;
     DefaultTableModel modelotabla;
     private Gestor gestor;
+    private String modelo;
 
-    public VistaTabla(Gestor gestor) {
+    public VistaTabla(Gestor gestor, String modelo) {
         this.gestor = gestor;
+        this.modelo = modelo;
         initComponents();
         setTitle("Método de Transporte");
+        Title.setText("Modelo " + modelo);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -109,11 +112,11 @@ public class VistaTabla extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    //me debuelve a la paguina principal
     private void bVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bVolverActionPerformed
         gestor.PagPrincipal();
     }//GEN-LAST:event_bVolverActionPerformed
-
+    //Dependiendo de el modelo escogido me saca la informacion de la tabla y la manda a su respectivo metodo
     private void bResolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bResolverActionPerformed
         int[][] cost = new int[Tabla.getRowCount() - 1][Tabla.getColumnCount() - 2];
         int[] oferta = new int[Tabla.getRowCount() - 1];
@@ -148,9 +151,14 @@ public class VistaTabla extends javax.swing.JFrame {
 
             }
         }
-        gestor.Resolver(oferta, demand, cost);
+        if (modelo == "vogel") {
+            gestor.ResolverVogel(oferta, demand, cost);
+        } else {
+            gestor.ResolverEsquina(oferta, demand, cost);
+        }
     }//GEN-LAST:event_bResolverActionPerformed
 
+    //muesctra la tabla con los destinos y las fabricas asignados
     public void MostrarTabla(int destinos, int fabricas) {
         String[] columnas = new String[destinos + 2];
         columnas[0] = "Fábricas";
@@ -183,6 +191,7 @@ public class VistaTabla extends javax.swing.JFrame {
         Tabla.setRowHeight((int) (389 / (fabricas + 1)));
     }
 
+    //me modifica la tabla para q se mestren los valores asignado a cada celda
     public void TablaResuelta(int[][] solucion) {
         for (int i = 0; i < Tabla.getRowCount() - 1; i++) {
             for (int j = 0; j < Tabla.getColumnCount() - 2; j++) {
@@ -190,7 +199,6 @@ public class VistaTabla extends javax.swing.JFrame {
                 Tabla.setValueAt(valor, i, j + 1);
             }
         }
-        System.out.println("fff");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,4 +1,4 @@
-package Control;
+package modelo;
 
 import java.util.Arrays;
 
@@ -177,7 +177,7 @@ public final class Vogel {
             if (pickI == -1 || pickJ == -1) {
                 break; // seguridad
             }
-            // Asignar la cantidad mínima entre supply y demand
+            // Asignar la cantidad mínima entre oferta y demand
             int quantity = Math.min(S[pickI], D[pickJ]);
             allocation[pickI][pickJ] = quantity;
             S[pickI] -= quantity;
@@ -196,7 +196,7 @@ public final class Vogel {
             // En caso de degeneración (ambos 0), se puede marcar una sola (por convención marcamos la columna)
             if (S[pickI] == 0 && D[pickJ] == 0) {
                 // Para mantener número correcto de celdas básicas, se deja una asignación cero en siguiente elección.
-                // Marcamos la columna como agotada (ya está marcado arriba). Si quieres otra convención, cámbiala.
+                // Marcamos la columna como agotada (ya está marcado arriba).
             }
         }
 
@@ -210,7 +210,10 @@ public final class Vogel {
         int n = allocation[0].length;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                total += allocation[i][j] * cost[i][j];
+                try {
+                    total += allocation[i][j] * cost[i][j];
+                } catch (Exception e) {
+                }
             }
         }
         return total;
