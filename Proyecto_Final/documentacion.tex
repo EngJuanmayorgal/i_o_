@@ -1,0 +1,228 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+
+\title{Sistema para la Soluci\'on del Problema de Transporte \\
+M\'etodo de Vogel y Esquina Noroeste}
+\author{Curso: Investigaci\'on de Operaciones I}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Planteamiento del problema y contexto}
+
+El problema cl\'asico de transporte busca determinar cu\'anto enviar desde varias f\'abricas (u or\'igenes) hacia distintos destinos (almacenes, clientes o centros de distribuci\'on) minimizando el costo total de env\'io, sujeto a restricciones de oferta y demanda.
+
+En este proyecto se desarrolla una aplicaci\'on de escritorio en Java (usando la biblioteca \texttt{Swing}) que permite construir y resolver instancias de este problema mediante dos heur\'isticas de soluci\'on inicial:
+
+\begin{itemize}
+  \item El \textbf{M\'etodo de la Esquina Noroeste}.
+  \item El \textbf{M\'etodo de Aproximaci\'on de Vogel}.
+\end{itemize}
+
+A modo de ejemplo, se considera el siguiente escenario:
+
+\begin{itemize}
+  \item Tres f\'abricas $F_1, F_2, F_3$ que producen un mismo art\'iculo.
+  \item Tres destinos $D_1, D_2, D_3$ que requieren dicho art\'iculo.
+  \item Cada f\'abrica $F_i$ tiene una oferta disponible $a_i$ (unidades).
+  \item Cada destino $D_j$ tiene una demanda $b_j$ (unidades).
+  \item El transporte desde $F_i$ hasta $D_j$ tiene un costo unitario $c_{ij}$.
+\end{itemize}
+
+La aplicaci\'on permite al usuario:
+
+\begin{itemize}
+  \item Seleccionar el n\'umero de f\'abricas y destinos (hasta $6 \times 6$).
+  \item Elegir el m\'etodo de soluci\'on inicial (Vogel o Esquina Noroeste).
+  \item Ingresar en una tabla los costos unitarios $c_{ij}$, la oferta $a_i$ de cada f\'abrica y la demanda $b_j$ de cada destino.
+  \item Obtener una matriz de asignaci\'on inicial $x_{ij}$ y el costo total asociado.
+\end{itemize}
+
+\section{Formulaci\'on matem\'atica del modelo}
+
+Sea un problema de transporte con $m$ f\'abricas y $n$ destinos. Se definen las siguientes variables y par\'ametros:
+
+\begin{itemize}
+  \item $x_{ij}$: cantidad enviada desde la f\'abrica $i$ al destino $j$.
+  \item $c_{ij}$: costo unitario de enviar una unidad desde $i$ hasta $j$.
+  \item $a_i$: oferta disponible en la f\'abrica $i$.
+  \item $b_j$: demanda requerida en el destino $j$.
+\end{itemize}
+
+Se asume el caso \emph{balanceado}, es decir,
+\[
+  \sum_{i=1}^{m} a_i = \sum_{j=1}^{n} b_j.
+\]
+
+\subsection*{Funci\'on objetivo}
+
+El objetivo es minimizar el costo total de transporte:
+\[
+  \min Z = \sum_{i=1}^{m} \sum_{j=1}^{n} c_{ij} x_{ij}.
+\]
+
+\subsection*{Restricciones}
+
+\begin{enumerate}
+  \item Restricci\'on de oferta por f\'abrica:
+  \[
+    \sum_{j=1}^{n} x_{ij} = a_i, \qquad i = 1, \dots, m.
+  \]
+
+  \item Restricci\'on de demanda por destino:
+  \[
+    \sum_{i=1}^{m} x_{ij} = b_j, \qquad j = 1, \dots, n.
+  \]
+
+  \item Restricci\'on de no negatividad:
+  \[
+    x_{ij} \ge 0, \qquad \forall i, j.
+  \]
+\end{enumerate}
+
+El software implementa dos heur\'isticas cl\'asicas para construir una soluci\'on factible inicial del problema anterior:
+
+\begin{itemize}
+  \item \textbf{Esquina Noroeste}: recorre la matriz de costos desde la esquina superior izquierda, asignando en cada celda la m\'inima cantidad posible seg\'un la oferta y la demanda remanentes.
+  \item \textbf{Vogel}: calcula penalizaciones por fila y columna a partir de las dos menores tarifas en cada una, seleccionando en cada iteraci\'on la fila o columna con penalizaci\'on m\'as alta y asignando en la celda de menor costo.
+\end{itemize}
+
+\section{Desarrollo del software: arquitectura y c\'odigo fuente}
+
+La aplicaci\'on est\'a implementada en Java siguiendo una arquitectura de tipo Modelo--Vista--Controlador (MVC), organizada en tres paquetes principales:
+
+\begin{itemize}
+  \item \textbf{Paquete \texttt{modelo}}: contiene las clases con la l\'ogica de los m\'etodos de transporte.
+  \begin{itemize}
+    \item \texttt{Vogel.java}: implementa el M\'etodo de Aproximaci\'on de Vogel, incluyendo el balanceo autom\'atico de oferta y demanda mediante filas o columnas ficticias cuando es necesario.
+    \item \texttt{EsquinaNoroeste.java}: implementa el M\'etodo de la Esquina Noroeste para construir una soluci\'on inicial b\'asica factible, asumiendo que el problema est\'a balanceado.
+  \end{itemize}
+
+  \item \textbf{Paquete \texttt{Control}}: act\'ua como controlador y punto de entrada.
+  \begin{itemize}
+    \item \texttt{Gestor.java}: coordina el flujo entre las vistas y los modelos. Recibe los datos ingresados por el usuario desde la tabla, invoca al m\'etodo correspondiente (Vogel o Esquina Noroeste) y devuelve los resultados a la interfaz.
+    \item \texttt{Launcher.java}: clase con el m\'etodo \texttt{main}, donde se configura un \emph{look and feel} moderno (Nimbus) y se crea una instancia de \texttt{Gestor}.
+  \end{itemize}
+
+  \item \textbf{Paquete \texttt{Vista}}: contiene las ventanas de la interfaz gr\'afica desarrollada con Swing.
+  \begin{itemize}
+    \item \texttt{VistaPrincipal.java}: ventana inicial donde se selecciona el n\'umero de f\'abricas y destinos, y el m\'etodo de soluci\'on (Vogel o Esquina Noroeste).
+    \item \texttt{VistaTabla.java}: ventana donde se despliega la tabla editable para el ingreso de costos, ofertas y demandas, y donde se visualiza la matriz de asignaci\'on y el costo total.
+  \end{itemize}
+\end{itemize}
+
+\subsection*{Flujo b\'asico de ejecuci\'on}
+
+\begin{enumerate}
+  \item El usuario ejecuta la aplicaci\'on y se muestra \texttt{VistaPrincipal}.
+  \item En \texttt{VistaPrincipal}, el usuario selecciona:
+  \begin{itemize}
+    \item El n\'umero de f\'abricas ($m$).
+    \item El n\'umero de destinos ($n$).
+    \item El m\'etodo de soluci\'on inicial (Vogel o Esquina Noroeste).
+  \end{itemize}
+  \item El controlador \texttt{Gestor} crea una instancia de \texttt{VistaTabla}, que construye din\'amicamente una tabla de tama\~no $(m+1) \times (n+2)$ con las siguientes columnas:
+  \begin{itemize}
+    \item Columna 1: nombre de la f\'abrica o la fila de demanda.
+    \item Columnas 2 a $n+1$: costos unitarios hacia cada destino.
+    \item Columna $n+2$: oferta (producci\'on) por f\'abrica.
+  \end{itemize}
+  \item El usuario ingresa los costos $c_{ij}$, las ofertas $a_i$ y las demandas $b_j$.
+  \item Al presionar el bot\'on de c\'alculo, \texttt{VistaTabla} extrae los datos num\'ericos de la tabla, los convierte en arreglos enteros y llama a \texttt{Gestor} para resolver el problema con el m\'etodo seleccionado.
+  \item El m\'etodo correspondiente en el paquete \texttt{modelo} devuelve la matriz de asignaci\'on $x_{ij}$ y el costo total, que son mostrados nuevamente en la tabla y en una etiqueta de texto.
+\end{enumerate}
+
+\subsection*{Ejemplo de implementaci\'on (fragmento)}
+
+A continuaci\'on se muestra, a modo ilustrativo, un fragmento simplificado del m\'etodo de Esquina Noroeste en pseudoc\'odigo Java:
+
+\begin{verbatim}
+int[][] esquinaNoroeste(int[][] cost, int[] oferta, int[] demand) {
+    int m = oferta.length;
+    int n = demand.length;
+    int[][] allocation = new int[m][n];
+    int[] S = oferta.clone();
+    int[] D = demand.clone();
+    int i = 0, j = 0;
+    while (i < m && j < n) {
+        int quantity = Math.min(S[i], D[j]);
+        allocation[i][j] = quantity;
+        S[i] -= quantity;
+        D[j] -= quantity;
+        if (S[i] == 0) i++;
+        if (D[j] == 0) j++;
+    }
+    return allocation;
+}
+\end{verbatim}
+
+Este fragmento refleja la l\'ogica implementada en la clase \texttt{EsquinaNoroeste.java} del proyecto.
+
+\section{Resultados y an\'alisis}
+
+Para ilustrar el funcionamiento del sistema, se plantea el siguiente ejemplo balanceado con $m = 3$ f\'abricas y $n = 3$ destinos:
+
+\begin{align*}
+  \text{Oferta} & : [a_1, a_2, a_3] = [30, 40, 50], \\
+  \text{Demanda} & : [b_1, b_2, b_3] = [20, 60, 40].
+\end{align*}
+
+La matriz de costos unitarios se define como:
+\[
+  C = (c_{ij}) =
+  \begin{bmatrix}
+    8 & 6 & 10 \\
+    9 & 7 & 4 \\
+    3 & 4 & 2
+  \end{bmatrix}.
+\]
+
+Al ingresar estos datos en la interfaz gr\'afica:
+
+\begin{itemize}
+  \item El \textbf{M\'etodo de la Esquina Noroeste} genera una soluci\'on inicial factible recorriendo la matriz desde la esquina superior izquierda, sin considerar los costos, por lo que tiende a producir soluciones con un costo total mayor.
+  \item El \textbf{M\'etodo de Vogel} calcula penalizaciones por fila y columna en cada iteraci\'on, priorizando las asignaciones en las celdas de menor costo dentro de las filas o columnas con penalizaci\'on m\'as alta. Esto conduce a una soluci\'on inicial generalmente m\'as cercana al \'optimo.
+\end{itemize}
+
+En pruebas realizadas con diferentes tamaños de problema (por ejemplo, $2 \times 2$, $3 \times 3$ y $4 \times 3$), se observ\'o que:
+
+\begin{itemize}
+  \item Ambas heur\'isticas generan asignaciones que satisfacen todas las restricciones de oferta y demanda.
+  \item La implementaci\'on del m\'etodo de Vogel en \texttt{Vogel.java} realiza el balanceo autom\'atico del problema cuando la suma de ofertas y demandas no coincide, agregando filas o columnas ficticias con costo cero.
+  \item En los ejemplos considerados, el costo total obtenido con Vogel fue menor o igual que el obtenido con la Esquina Noroeste, como se espera te\'oricamente.
+  \item La interfaz modernizada (uso de fuente \'unica, paleta clara y mensajes descriptivos) facilita el ingreso de datos y la interpretaci\'on de los resultados.
+\end{itemize}
+
+\section{Conclusiones y recomendaciones}
+
+\subsection*{Conclusiones}
+
+\begin{itemize}
+  \item La arquitectura basada en MVC (paquetes \texttt{modelo}, \texttt{Control} y \texttt{Vista}) favorece la separaci\'on de responsabilidades y la extensibilidad del proyecto.
+  \item La implementaci\'on de los m\'etodos de Esquina Noroeste y Vogel en las clases \texttt{EsquinaNoroeste.java} y \texttt{Vogel.java} permite obtener r\'apidamente soluciones iniciales factibles para el problema de transporte.
+  \item La interfaz gr\'afica, apoyada en Swing y mejorada con un \emph{look and feel} moderno (Nimbus), hace que la herramienta sea intuitiva para usuarios del curso de Investigaci\'on de Operaciones.
+  \item El sistema constituye una plataforma adecuada para la ense\~nanza de heur\'isticas de soluci\'on inicial en problemas de transporte y para la comparaci\'on cualitativa de resultados.
+\end{itemize}
+
+\subsection*{Recomendaciones}
+
+\begin{itemize}
+  \item Incorporar m\'etodos de optimizaci\'on adicional, como el \emph{m\'etodo de la esquina modificada} o el \emph{m\'etodo de Stepping-Stone}, para mejorar la soluci\'on inicial obtenida por Vogel o Esquina Noroeste.
+  \item A\~nadir validaciones m\'as robustas de entrada de datos (por ejemplo, advertencias expl\'icitas cuando el problema no est\'a balanceado para el uso de Esquina Noroeste).
+  \item Permitir la exportaci\'on de resultados a formatos como CSV o PDF y la carga de instancias desde archivos.
+  \item Incluir pruebas unitarias automatizadas (por ejemplo, con JUnit) para verificar la correcci\'on de los algoritmos de asignaci\'on y del c\'alculo de costos.
+  \item Extender la documentaci\'on t\'ecnica con comentarios Javadoc sobre clases y m\'etodos principales.
+\end{itemize}
+
+\end{document}
