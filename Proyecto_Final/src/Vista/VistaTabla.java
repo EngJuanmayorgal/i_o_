@@ -1,6 +1,7 @@
 package Vista;
 
 import Control.Gestor;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class VistaTabla extends javax.swing.JFrame {
@@ -14,10 +15,48 @@ public class VistaTabla extends javax.swing.JFrame {
         this.gestor = gestor;
         this.modelo = modelo;
         initComponents();
-        setTitle("Método de Transporte");
-        Title.setText("Modelo " + modelo);
+        customizeUI();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private void customizeUI() {
+        setTitle("Problema de Transporte - " + modelo);
+
+        // Barra superior tipo portal institucional
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(new java.awt.Color(0, 122, 204));
+        JMenu menuTitulo = new JMenu("Solución de transporte");
+        menuTitulo.setForeground(java.awt.Color.WHITE);
+        menuBar.add(menuTitulo);
+        setJMenuBar(menuBar);
+
+        // Panel de contenido similar a tarjetas de "Horario" y "Noticias"
+        getContentPane().setBackground(new java.awt.Color(240, 240, 240));
+        jPanel1.setBackground(new java.awt.Color(240, 240, 240));
+        jPanel1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Encabezado tipo bloque con explicación
+        Title.setText("<html><b>Matriz de costos y resultados - Modelo: " + modelo + "</b><br/>"
+                + "Complete la tabla con los costos, la producción por fábrica y la demanda por destino; "
+                + "luego presione \"Calcular solución\"." + "</html>");
+        Title.setHorizontalAlignment(SwingConstants.LEFT);
+        Title.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Tabla dentro de una tarjeta con borde y título
+        jScrollPane1.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new java.awt.Color(220, 220, 220)),
+                "Matriz de costos, oferta y demanda",
+                javax.swing.border.TitledBorder.LEFT,
+                javax.swing.border.TitledBorder.TOP,
+                new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 13)));
+
+        Tabla.setFillsViewportHeight(true);
+
+        bResolver.setText("Calcular solución");
+        bVolver.setText("Volver al inicio");
+        bResolver.setToolTipText("Resuelve el problema de transporte usando el modelo seleccionado");
+        bVolver.setToolTipText("Regresa a la pantalla de configuración del problema");
     }
 
     @SuppressWarnings("unchecked")
@@ -88,9 +127,9 @@ public class VistaTabla extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(Title, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
+                .addComponent(Title, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -151,7 +190,8 @@ public class VistaTabla extends javax.swing.JFrame {
 
             }
         }
-        if (modelo == "vogel") {
+        boolean esVogel = modelo != null && modelo.toLowerCase().contains("vogel");
+        if (esVogel) {
             gestor.ResolverVogel(oferta, demand, cost);
         } else {
             gestor.ResolverEsquina(oferta, demand, cost);
@@ -180,11 +220,11 @@ public class VistaTabla extends javax.swing.JFrame {
         };
 
         for (int i = 1; i <= fabricas; i++) {
-            Object[] fila = new Object[fabricas + 2];
+            Object[] fila = new Object[columnas.length];
             fila[0] = "Fábrica " + i;
             modelotabla.addRow(fila);
         }
-        Object[] fila = new Object[fabricas + 2];
+        Object[] fila = new Object[columnas.length];
         fila[0] = "Demanda";
         modelotabla.addRow(fila);
         Tabla.setModel(modelotabla);
