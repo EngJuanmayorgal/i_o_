@@ -23,38 +23,14 @@ public class VistaTabla extends javax.swing.JFrame {
     private void customizeUI() {
         setTitle("Problema de Transporte - " + modelo);
 
-        // Barra superior tipo portal institucional
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(new java.awt.Color(0, 122, 204));
-        JMenu menuTitulo = new JMenu("Solución de transporte");
-        menuTitulo.setForeground(java.awt.Color.WHITE);
-        menuBar.add(menuTitulo);
-        setJMenuBar(menuBar);
-
-        // Panel de contenido similar a tarjetas de "Horario" y "Noticias"
-        getContentPane().setBackground(new java.awt.Color(240, 240, 240));
-        jPanel1.setBackground(new java.awt.Color(240, 240, 240));
-        jPanel1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
         // Encabezado tipo bloque con explicación
         Title.setText("<html><b>Matriz de costos y resultados - Modelo: " + modelo + "</b><br/>"
                 + "Complete la tabla con los costos, la producción por fábrica y la demanda por destino; "
                 + "luego presione \"Calcular solución\"." + "</html>");
         Title.setHorizontalAlignment(SwingConstants.LEFT);
         Title.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        // Tabla dentro de una tarjeta con borde y título
-        jScrollPane1.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(new java.awt.Color(220, 220, 220)),
-                "Matriz de costos, oferta y demanda",
-                javax.swing.border.TitledBorder.LEFT,
-                javax.swing.border.TitledBorder.TOP,
-                new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 13)));
-
         Tabla.setFillsViewportHeight(true);
-
-        bResolver.setText("Calcular solución");
-        bVolver.setText("Volver al inicio");
+      
         bResolver.setToolTipText("Resuelve el problema de transporte usando el modelo seleccionado");
         bVolver.setToolTipText("Regresa a la pantalla de configuración del problema");
     }
@@ -76,7 +52,7 @@ public class VistaTabla extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        bResolver.setText("Resolver");
+        bResolver.setText("Calcular solucion");
         bResolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bResolverActionPerformed(evt);
@@ -94,6 +70,7 @@ public class VistaTabla extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        Tabla.setAutoscrolls(false);
         Tabla.setRowSelectionAllowed(false);
         jScrollPane1.setViewportView(Tabla);
 
@@ -101,7 +78,7 @@ public class VistaTabla extends javax.swing.JFrame {
         Title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Title.setText("jLabel1");
 
-        bVolver.setText("Volver");
+        bVolver.setText("Volver al inicio");
         bVolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bVolverActionPerformed(evt);
@@ -116,8 +93,8 @@ public class VistaTabla extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addComponent(bVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(bResolver, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64))
+                .addComponent(bResolver, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(71, 71, 71))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 879, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -127,15 +104,14 @@ public class VistaTabla extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(Title, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bResolver, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bVolver))
-                .addGap(30, 30, 30))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(bResolver, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                    .addComponent(bVolver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -190,8 +166,7 @@ public class VistaTabla extends javax.swing.JFrame {
 
             }
         }
-        boolean esVogel = modelo != null && modelo.toLowerCase().contains("vogel");
-        if (esVogel) {
+        if ("vogel".equals(modelo)) {
             gestor.ResolverVogel(oferta, demand, cost);
         } else {
             gestor.ResolverEsquina(oferta, demand, cost);

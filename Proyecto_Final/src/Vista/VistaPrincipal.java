@@ -18,26 +18,12 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private void customizeUI() {
         setTitle("Problema de Transporte - Configuración");
 
-        // Barra superior tipo portal institucional
-        javax.swing.JMenuBar menuBar = new javax.swing.JMenuBar();
-        menuBar.setBackground(new java.awt.Color(0, 122, 204));
-        javax.swing.JMenu menuTitulo = new javax.swing.JMenu("Problema de Transporte");
-        menuTitulo.setForeground(java.awt.Color.WHITE);
-        menuBar.add(menuTitulo);
-        setJMenuBar(menuBar);
-
         // Fondo general claro
         getContentPane().setBackground(new java.awt.Color(240, 240, 240));
 
         // Tarjeta central similar a "Datos de usuario"
         jLabel1.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 22));
-        PanelPrincipal.setBackground(java.awt.Color.WHITE);
-        PanelPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 220, 220)),
-                "Datos del problema de transporte",
-                javax.swing.border.TitledBorder.LEFT,
-                javax.swing.border.TitledBorder.TOP,
-                new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14)));
+      
 
         bntSeguir.setText("Crear tabla");
         bntSeguir.setToolTipText("Generar la tabla para ingresar costos, oferta y demanda");

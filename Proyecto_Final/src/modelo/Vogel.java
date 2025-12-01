@@ -8,7 +8,7 @@ public final class Vogel {
     }
 
     // Ejecuta el método de Vogel y devuelve la matriz de asignaciones
-    public int[][] vogelApproximation(int[][] cost, int[] oferta, int[] demand) {
+    public static int[][] vogelApproximation(int[][] cost, int[] oferta, int[] demand) {
         // Copias para no modificar entradas originales
         int m = oferta.length;
         int n = demand.length;
@@ -204,7 +204,7 @@ public final class Vogel {
     }
 
     // Calcula el costo total de la matriz de asignaciones
-    public int totalCost(int[][] allocation, int[][] cost) {
+    public static int totalCost(int[][] allocation, int[][] cost) {
         int total = 0;
         int m = allocation.length;
         int n = allocation[0].length;

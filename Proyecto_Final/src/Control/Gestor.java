@@ -31,17 +31,15 @@ public final class Gestor {
 
     //crea una clase vogel para poder resolver el problema y me configura la tabla visible para q se vea el resultado
     public void ResolverVogel(int[] oferta, int[] demanda, int[][] costos) {
-        Vogel metodoVogel = new Vogel();
-        int[][] solucion = metodoVogel.vogelApproximation(costos, oferta, demanda);
+        int[][] solucion = Vogel.vogelApproximation(costos, oferta, demanda);
         vistaTabla.TablaResuelta(solucion);
-        vistaTabla.Title.setText("el costo total es de :" + metodoVogel.totalCost(solucion, costos));
+        vistaTabla.Title.setText("el costo total es de :" + Vogel.totalCost(solucion, costos));
     }
 
     //crea una clase esquinaNoroeste para poder resolver el problema y me configura la tabla visible para q se vea el resultado
     public void ResolverEsquina(int[] oferta, int[] demanda, int[][] costos) {
-        EsquinaNoroeste metodoEquina = new EsquinaNoroeste();
-        int[][] solucion = metodoEquina.esquinaNoroeste(costos, oferta, demanda);
+        int[][] solucion = EsquinaNoroeste.esquinaNoroeste(costos, oferta, demanda);
         vistaTabla.TablaResuelta(solucion);
-        vistaTabla.Title.setText("el costo total es de :" + metodoEquina.totalCost(solucion, costos));
+        vistaTabla.Title.setText("El costo total es de :" + EsquinaNoroeste.totalCost(solucion, costos));
     }
 }

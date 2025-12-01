@@ -4,7 +4,7 @@ package modelo;
 public class EsquinaNoroeste {
 
     // Método que aplica la esquina noroeste y devuelve la matriz de asignaciones
-    public int[][] esquinaNoroeste(int[][] cost, int[] oferta, int[] demand) {
+    public static int[][] esquinaNoroeste(int[][] cost, int[] oferta, int[] demand) {
 
         int m = oferta.length;
         int n = demand.length;
@@ -40,7 +40,7 @@ public class EsquinaNoroeste {
     }
 
     // Calcular costo total
-    public int totalCost(int[][] allocation, int[][] cost) {
+    public static int totalCost(int[][] allocation, int[][] cost) {
         int total = 0;
         for (int i = 0; i < allocation.length; i++) {
             for (int j = 0; j < allocation[0].length; j++) {
